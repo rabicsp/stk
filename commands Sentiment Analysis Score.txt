@@ -1,0 +1,65 @@
+*To know the directory 
+
+>getwd()
+
+* Put the positive word and negative word in the directory
+* Scan all the positive words from the directory 
+
+
+>scan('positive-words.txt', what = 'character',comment.char =";")
+
+
+*Name the positive words as poswords
+
+> poswords <-scan('positive-words.txt', what = 'character',comment.char =";")
+
+
+*Look at the some other properties as character
+
+>str(poswords)
+
+
+*Same way to put the negative words in the dictory and scan command
+
+
+>scan('negative-words.txt', what = 'character',comment.char =";")
+
+
+>negwords <-scan('negative-words.txt', what = 'character',comment.char =";")
+
+*To see all the words to view
+
+>poswords
+
+>negwords
+
+*To get the sentient score and bag of words.
+
+>textbag
+
+*Match function help to see how many of the positive words by commands
+
+
+>match(textbag, poswords)
+
+same way to see the negative words
+
+>match(textbag, negwords)
+
+
+*To count the negative words
+
+>sum(!is.na(match(textbag,negwords)))
+
+
+*To count the positive words.
+
+>sum(!is.na(match(textbag,poswords)))
+
+
+To get the sentimet score poswords - negwords
+
+>6-8
+
+
+
