@@ -292,6 +292,8 @@ THen you can see the result is : [1] 0 0 0 0
 
 >mean(score)
 
+
+
 * TO know the standarddivision
 
 >sd(score)
@@ -301,7 +303,7 @@ THen you can see the result is : [1] 0 0 0 0
 >hist(score)
 
 
-
+* upto date the command line is followed
 
 
 
