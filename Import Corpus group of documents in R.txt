@@ -1,0 +1,309 @@
+*The follwing package should be installed
+
+> if(!require(tm)){}
+Loading required package: tm
+Loading required package: NLP
+> if(!require(wordcloud)){}
+Loading required package: wordcloud
+Loading required package: RColorBrewer
+> if(!require(stringr)){}
+Loading required package: stringr
+
+*Get the file path from directory
+
+> file.choolse()
+
+then go to file and select for the particular file.
+
+
+*Select the particular file/folder path should be set from the directory
+
+
+> folder <-"C:\\Users\\Lenovo\\Documents\\corpus"
+
+>folder 
+
+* To see the view of the particular file by filtering of the that folder
+
+*Get and see the particular files txt (Which is multiple file in the folder) thousand documents could be read by folders.
+
+>list.files(path=folder)
+
+*Filter all the specific file that need to text mining and avoid irrevelent files on the particular folder.
+*Get the separate file path each of the folders.
+
+>list.files(path=folder,pattern = "*.txt")
+
+
+*Save the file list 
+
+> filelist <-list.files(path=folder, pattern = "*.txt")
+
+*Quickly look at it.
+
+>filelist 
+
+*To see the filelist of path from file.
+
+> paste(folder,"\\",filelist)
+
+
+C:\\Users\\Lenovo\\Documents\\corpus\\ \\ ioi.txt" "C:\\Users\\Lenovo\\Documents\\corpus\\ \\ pop.txt" "C:\\Users\\Lenovo\\Documents\\corpus\\ \\ tot.txt"
+[4] "C:\\Users\\Lenovo\\Documents\\corpus\\ \\ wow.txt
+
+* It look like this, if the particular file list is has gap as well as others space then remove by folling command
+
+
+*The separation should be empty then following command should be written.
+
+
+> paste(folder,"\\",filelist, sep="")
+
+
+*Then save as update file list.
+
+> filelist <-paste(folder,"\\",filelist, sep="")
+
+*Quick view of the filelist
+
+>filelist
+
+
+*To know what type of charcter in the file and see the following command
+
+>typeof(filelist)
+
+*To see all the filelist of the particular documents with listed 
+
+>lapply(filelist, FUN = readLines)
+
+*Save it in a.
+
+> a <- lapply(filelist, FUN = readLines)
+
+*Another function help to see like a single documents but sometime it doesn't show in R , may be another platform able to see
+
+
+>lapply(a, FUN = paste, collapse="")
+
+
+* Save it as corpus
+
+>corpus <-lapply(a, FUN = paste, collapse="")
+
+*From entire corpus in where may be more than thousand documents could be hold.
+*All the punction marked has gone from corpus of document
+
+
+
+>gsub(pattern = "\\W", replace = " ", corpus)
+
+
+*Then save as corpus2 for example.
+
+*TO clean up the all the digits from corpus.
+
+>gsub(pattern = "\\d", replace = " ", corpus2)
+
+*Clean all the relevent stop words from all documents together
+
+>tolower(corpus)
+
+*Then save it as corpus2
+
+> corpus2 <-tolower(corpus)
+
+*  Now remove stop words. (sometime library(tm) package also be loaded for installing package of stopwords.
+* Then save it as corpus2 as well
+
+>corpus2 <-removeWords(corpus2,stopwords("english"))
+
+>corpus2 <-tolower(corpus)
+
+*Then remove the single letter from the words.
+
+>gsub(pattern = "\\b[A-z]\\b{1}", replace =" ", corpus2)
+
+*Save it in corpus2.
+
+> corpus2 <-gsub(pattern = "\\b[A-z]\\b{1}", replace =" ", corpus2)
+
+
+
+*To remove all the whitespace from the corpus
+
+>stripWhitespace(corpus2)
+
+*Then save it in corpus2
+
+>corpus2 <-stripWhitespace(corpus2)
+
+*To find the package install wordcloud
+*Load the package called  RColorBrewer
+
+>wordcloud(corpus2)
+
+*To see the wordcloud package
+
+>wordcloud(corpus2, random.order = FALSE)
+
+
+
+* With the color code 
+
+>wordcloud(corpus2, random.order = FALSE, col =rainbow(3))
+
+
+* To get the separation of wordcloud  with color code in corpus
+
+> wordcloud(corpus2, random.order = FALSE, col =rainbow(3))
+
+
+* Converted to corpus in the link of TM package
+
+> corpus3 <- Corpus(VectorSource(corpus2))
+
+
+*From the corpus to create the term document matrix
+
+
+> tdm <- TermDocumentMatrix(corpus3)
+
+> tdm
+
+*Then it will show the term document matrix and details calculation
+
+>tdm
+
+
+*Converted to matrix all the words
+
+>as.matrix(tdm)
+
+* Save it in M
+
+> m <-as.matrix(tdm)
+
+
+* Make colnames for each column and it will show the colnames
+
+>colnames(m)
+
+
+colnames(m) <-c("Doc1","DOC2","DOC3","DOC4")
+
+>m
+
+*So far is call stright colud and now we can see comparison word cloud
+
+
+* To see the comparison wordcloud
+
+> comparison.cloud(m)
+
+* Then you can see the most dominated word based on four documents
+
+* By following commond able to see the items of positive words
+
+>opinion.lexicon.pos <-scan('positive-words.txt',what='character',comment.char = ';')
+
+* By follwoing command able to see the items of negative words
+
+> opinion.lexicon.pos <-scan('negative-words.txt',what='character',comment.char = ';')
+
+
+* Now following command able to see the bag of words for each of documents.
+
+* To see the bag of words
+
+>str_split(corpus2, pattern ="\\s+")
+
+* Put the name of bagword and save it
+
+>bagword <-str_split(corpus2, pattern ="\\s+")
+
+* Based on each documents found that
+
+> lapply(bagword, function(x){sum(!is.na(match(x,opinion.lexicon.pos)))})
+
+*Above command give the following result of each documents of positive words.
+
+[[1]]
+[1] 69
+
+[[2]]
+[1] 57
+
+[[3]]
+[1] 28
+
+[[4]]
+[1] 35
+
+
+*Same way to see how many negative words match
+
+> lapply(bagword, function(x){sum(!is.na(match(x,opinion.lexicon.neg)))})
+
+*Then the following result will be shown below
+[[1]]
+[1] 69
+
+[[2]]
+[1] 57
+
+[[3]]
+[1] 28
+
+[[4]]
+[1] 35
+
+*To get the sentiment score simply substruct and found the result
+
+> lapply(bagword, function(x){sum(!is.na(match(x,opinion.lexicon.neg)))-sum(!is.na(match(x, opinion.lexicon.neg)))})
+
+*The above command give the result of follwing which is 0
+
+[[1]]
+[1] 0
+
+[[2]]
+[1] 0
+
+[[3]]
+[1] 0
+
+[[4]]
+[1] 0
+
+
+*Vector arithmetic tools
+
+> unlist(lapply(bagword, function(x){sum(!is.na(match(x,opinion.lexicon.neg)))-sum(!is.na(match(x, opinion.lexicon.neg)))}))
+
+THen you can see the result is : [1] 0 0 0 0
+
+*Then save is as score 
+
+>> score <-unlist(lapply(bagword, function(x){sum(!is.na(match(x,opinion.lexicon.neg)))-sum(!is.na(match(x, opinion.lexicon.neg)))}))
+
+
+*TO see the average score
+
+>mean(score)
+
+* TO know the standarddivision
+
+>sd(score)
+
+* TO see the histogram
+
+>hist(score)
+
+
+
+
+
+
+
+
